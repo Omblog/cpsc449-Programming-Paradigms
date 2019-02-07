@@ -54,6 +54,9 @@ public class Parse {
 		boolean near_flag = false;
 		boolean mach_flag = false;
 		boolean toonear_flag = false;
+		
+		boolean docustart = false;//indicates document started\
+		boolean docuend = false;
 				
 		int use_ind = 0;
 		int use_ind2 = 0;
@@ -62,6 +65,7 @@ public class Parse {
 		int k = 0;
 		int m_row = 0;
 		int p = 0;
+		int headercounter = 0;
 
 		String[] inputArr = headerCheck.inputFileToList(headerCheck.inputFile);
 		if(!headerCheck.isValidFile(inputArr)){
@@ -77,8 +81,21 @@ public class Parse {
 
 			//Sets name flag to check if there is a name in the following .txt line.
 			if (myLine.contains("Name:")) {
+				headercounter++;
+				docustart = true;
 				name_flag = true;
 				continue;
+			}
+			
+			if (docustart == false) {
+				if ("".equals(myLine.trim())) {
+					continue;
+				}else {
+					System.out.println("Error while parsing input file");
+					writer.write("Error while parsing input file");
+					writer.close();
+					System.exit(1);
+				}
 			}
 
 			//Outputs a parse error if no name is given in the .txt file.
@@ -96,6 +113,7 @@ public class Parse {
 			//FORCED PARTIAL ASSIGNMENT
 			//Sets flag to append forced partial assignment lines into array on next loop iteration.
 			if (myLine.contains("forced partial assignment:")) {
+				headercounter++;
 				forced_flag = true;
 				continue;
 			}
@@ -152,6 +170,7 @@ public class Parse {
 
 			//FORBIDDEN MACHINE
 			if (myLine.contains("forbidden machine:")) {
+				headercounter++;
 				forb_flag = true;
 				continue;
 			}
@@ -182,6 +201,7 @@ public class Parse {
 
 			//TOO NEAR TASK
 			if (myLine.contains("too-near tasks:")) {
+				headercounter++;
 				near_flag = true;
 				continue;
 			}
@@ -215,6 +235,7 @@ public class Parse {
 
 		    //Sets the machine penalties flag.
 			if (myLine.contains("machine penalties:")) {
+				headercounter++;
 				mach_flag = true;
 				continue;
 			}
@@ -263,6 +284,7 @@ public class Parse {
 
 			//Too near penalties
 			if (myLine.contains("too-near penalities")) {
+				headercounter++ ;
 				toonear_flag = true;
 				continue;
 			}
@@ -293,6 +315,7 @@ public class Parse {
 				}
 
 			}
+			//if(header)
 
 		}
 
@@ -395,8 +418,8 @@ public class Parse {
 	public static void main(String[] args) {
 	
 		// Create Parse object with desired input file & output file locations
-		Parse parser = new Parse("C:\\Users\\parke\\Desktop\\Projects\\Repos\\cpsc449-Programming-Paradigms\\Test Files\\wrongnumbermachine.txt", 
-										"C:\\Users\\parke\\Desktop\\CPSC 449\\myoutput.txt");
+		Parse parser = new Parse("/Users/favian.silva/eclipse-workspace/A1/src/test.txt", 
+										"/Users/favian.silva/eclipse-workspace/A1/src/myoutput.txt");
 
 		// Parse through each line of the input file and quit upon proccessing errors. Must put Parse opbject in try catch block as
 		// methodn throws IOException.
